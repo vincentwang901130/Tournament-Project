@@ -75,7 +75,7 @@ def playerStandings():
     cursor.execute("SELECT * FROM standings;")
     results = cursor.fetchall()
     if (results[0][2] != 0) and (results[0][2] == results[1][2]):
-        # order by winning rate
+        # order by winning
         cursor.execute("SELECT id, name, won, played FROM"
                        " standings ORDER BY "
                        " won DESC;")
