@@ -7,20 +7,17 @@
 -- these lines here.
 
 DROP DATABASE IF EXISTS tournament;
-
 CREATE DATABASE tournament;
 
 \connect tournament
 
 DROP TABLE IF EXISTS player CASCADE;
-
 CREATE TABLE player(
   id serial PRIMARY KEY,
   name text
 );
 
-DROP TABLE IF EXISTS math CASCADE;
-
+DROP TABLE IF EXISTS match CASCADE;
 CREATE TABLE match(
   match_id serial,
   winner INTEGER,

@@ -78,7 +78,7 @@ def playerStandings():
         # order by winning rate
         cursor.execute("SELECT id, name, won, played FROM"
                        " standings ORDER BY "
-                       " (cast(won AS DECIMAL)/played) DESC;")
+                       " won DESC;")
         results = cursor.fetchall()
     db.close()
     return results
