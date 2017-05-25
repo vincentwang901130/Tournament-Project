@@ -20,10 +20,8 @@ CREATE TABLE player(
 DROP TABLE IF EXISTS match CASCADE;
 CREATE TABLE match(
   match_id serial,
-  winner INTEGER,
-  loser INTEGER,
-  FOREIGN KEY(winner) REFERENCES player(id),
-  FOREIGN KEY(loser) REFERENCES player(id)
+  winner INTEGER REFERENCES players(id) ON DELETE CASCADE,
+  loser INTEGER REFERENCES players(id) ON DELETE CASCADE
 );
 
 CREATE VIEW standings AS

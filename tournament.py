@@ -7,15 +7,18 @@ import psycopg2
 import bleach
 
 
-def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+def connect(database_name="tournament"):
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        cursor = db.cursor()
+        return db, cursor
+    except psycopg2.Error as e:
+        print("Error: %s." % e)
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     cursor.execute("DELETE FROM match")
     db.commit()
     db.close()
@@ -23,8 +26,7 @@ def deleteMatches():
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     cursor.execute("DELETE FROM player")
     db.commit()
     db.close()
@@ -32,8 +34,7 @@ def deletePlayers():
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     cursor.execute("SELECT COUNT(*) FROM player")
     count = cursor.fetchone()[0]
     db.close()
@@ -49,8 +50,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     inputname = bleach.clean(name, strip=True)
     cursor.execute("INSERT INTO player (name) values (%s)", (inputname,))
     db.commit()
@@ -70,8 +70,7 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     cursor.execute("SELECT * FROM standings;")
     results = cursor.fetchall()
     if (results[0][2] != 0) and (results[0][2] == results[1][2]):
@@ -91,9 +90,7 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     cursor.execute(
         "INSERT INTO match (winner, loser) VALUES (%s, %s)", (winner, loser,))
     db.commit()
@@ -115,9 +112,7 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
-    db = connect()
-    cursor = db.cursor()
+    db, cursor = connect()
     cursor.execute("SELECT * FROM standings")
     results = cursor.fetchall()
     pairings = []
